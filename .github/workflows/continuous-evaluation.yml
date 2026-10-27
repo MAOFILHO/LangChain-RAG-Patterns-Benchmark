@@ -25,14 +25,14 @@ jobs:
       LANGFUSE_PUBLIC_KEY: ${{ secrets.LANGFUSE_PUBLIC_KEY }}
       LANGFUSE_SECRET_KEY: ${{ secrets.LANGFUSE_SECRET_KEY }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       # The `secrets` context is not available in a job-level `if`, so each step checks the env copy.
       - name: Skip when OPENAI_API_KEY is not set
         if: env.OPENAI_API_KEY == ''
         run: echo "::notice::OPENAI_API_KEY secret is not set; evaluation skipped."
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         if: env.OPENAI_API_KEY != ''
         with:
           python-version: "3.13"
@@ -51,7 +51,7 @@ jobs:
 
       - name: Upload run artifacts
         if: always() && env.OPENAI_API_KEY != ''
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: rag-evaluation-results
           path: |
