@@ -19,7 +19,6 @@ on:
 jobs:
   evaluate:
     runs-on: ubuntu-latest
-    if: ${{ secrets.OPENAI_API_KEY != '' }}
     env:
       OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
       LANGSMITH_API_KEY: ${{ secrets.LANGSMITH_API_KEY }}
@@ -28,21 +27,30 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # The `secrets` context is not available in a job-level `if`, so each step checks the env copy.
+      - name: Skip when OPENAI_API_KEY is not set
+        if: env.OPENAI_API_KEY == ''
+        run: echo "::notice::OPENAI_API_KEY secret is not set; evaluation skipped."
+
       - uses: actions/setup-python@v5
+        if: env.OPENAI_API_KEY != ''
         with:
           python-version: "3.13"
 
       - name: Install dependencies
+        if: env.OPENAI_API_KEY != ''
         run: pip install -r requirements.txt
 
       - name: Run full evaluation pipeline
+        if: env.OPENAI_API_KEY != ''
         run: python main.py
 
       - name: Regression check against baseline
+        if: env.OPENAI_API_KEY != ''
         run: python scripts/regression_check.py
 
       - name: Upload run artifacts
-        if: always()
+        if: always() && env.OPENAI_API_KEY != ''
         uses: actions/upload-artifact@v4
         with:
           name: rag-evaluation-results

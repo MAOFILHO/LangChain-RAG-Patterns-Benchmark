@@ -204,7 +204,7 @@ All tunable parameters live in `src/config.py` and can be overridden via `.env`:
 ## Project Structure
 
 ```
-RAG-Evaluation-Project/
+LangChain-RAG-Patterns-Benchmark/
 ├── main.py                  # CLI entrypoint
 ├── src/
 │   ├── config.py            # all tunable settings
